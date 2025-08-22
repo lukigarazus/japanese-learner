@@ -1,6 +1,5 @@
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isKanji } from "wanakana";
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
@@ -11,7 +10,8 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { WordAdder } from "./WordAdder";
-import { commands, Word } from "../bindings";
+import { Word } from "../bindings";
+import { useAddWord, useWords } from "../queries";
 
 type WordsState =
   | { kind: "idle" }
@@ -96,23 +96,6 @@ export const Words = () => {
       </div>
     </div>
   );
-};
-
-const useWords = () => {
-  return useQuery({
-    queryKey: ["words"],
-    queryFn: () => commands.getWords(),
-  });
-};
-
-const useAddWord = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: commands.addWord,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["words"] });
-    },
-  });
 };
 
 const WordRow =

@@ -1,6 +1,5 @@
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import reactStringReplace from "react-string-replace";
@@ -9,8 +8,9 @@ import {
   XCircleIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { commands, Kanji } from "../bindings";
+import { Kanji } from "../bindings";
 import { KanjiAdder } from "./KanjiAdder";
+import { useAddKanji, useKanjis } from "../queries";
 
 type KanjisState =
   | { kind: "idle" }
@@ -95,23 +95,6 @@ export const Kanjis = () => {
       </div>
     </div>
   );
-};
-
-const useKanjis = () => {
-  return useQuery({
-    queryKey: ["kanjis"],
-    queryFn: () => commands.getKanjis(),
-  });
-};
-
-const useAddKanji = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: commands.addKanji,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["kanjis"] });
-    },
-  });
 };
 
 const KanjiRow =
