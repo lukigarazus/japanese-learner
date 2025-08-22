@@ -21,6 +21,9 @@ pub fn run() {
             knowledge_base::words::get_words,
             knowledge_base::words::add_word,
             knowledge_base::words::has_word,
+            knowledge_base::kanjis::get_kanjis,
+            knowledge_base::kanjis::add_kanji,
+            knowledge_base::kanjis::has_kanji,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
