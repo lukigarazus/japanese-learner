@@ -13,9 +13,9 @@ pub fn run() {
     let mut builder = Builder::<tauri::Wry>::new()
         // Then register them (separated by a comma)
         .commands(collect_commands![
-            kanji::commands::search_kanji,
+            kanji::commands::search_heisig_kanji,
             kanji::commands::get_heisig_kanjis,
-            kanji::commands::search_kanjis,
+            kanji::commands::search_heisig_kanjis,
             word::get_word_dict_entry,
             word::get_word_candidates,
             knowledge_base::words::get_words,

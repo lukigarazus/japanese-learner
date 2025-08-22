@@ -21,12 +21,12 @@ impl MyDictionary {
             let my_entry = MyEntry(entry);
             let word = my_entry.word_string();
             if let Some(word) = word {
-                println!(
-                    "Adding word: {} with reading: {}, {}",
-                    my_entry.kanji_elements_string(),
-                    my_entry.reading_elements_string(),
-                    word
-                );
+                // println!(
+                //     "Adding word: {} with reading: {}, {}",
+                //     my_entry.kanji_elements_string(),
+                //     my_entry.reading_elements_string(),
+                //     word
+                // );
                 kanji_to_entry.insert(word.clone(), my_entry);
             } else {
                 println!(

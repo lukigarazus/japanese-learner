@@ -38,6 +38,7 @@ impl HeisigKanjis {
     fn new(vec: Vec<Arc<HeisigKanji>>) -> Self {
         let mut id_map = HashMap::new();
         let mut kanji_map = HashMap::new();
+
         for kanji in vec.iter() {
             id_map.insert(kanji.id.clone(), kanji.clone());
             kanji_map.insert(kanji.kanji.clone(), kanji.clone());
@@ -53,8 +54,25 @@ impl HeisigKanjis {
         self.id_map.get(id).cloned()
     }
 
-    pub fn get_by_kanji(&self, kanji: &String) -> Option<Arc<HeisigKanji>> {
-        self.kanji_map.get(kanji).cloned()
+    pub fn get_by_kanji(&self, kanji: &String) -> Vec<Arc<HeisigKanji>> {
+        let res = self.kanji_map.get(kanji).cloned();
+        if let Some(k) = res { vec![k] } else { vec![] }
+    }
+
+    pub fn get_by_reading(&self, reading: &String) -> Vec<Arc<HeisigKanji>> {
+        self.vec
+            .iter()
+            .filter(|k| k.onYomi.contains(reading) || k.kunYomi.contains(reading))
+            .cloned()
+            .collect()
+    }
+
+    pub fn get_by_keywords(&self, keywords: &Vec<String>) -> Vec<Arc<HeisigKanji>> {
+        self.vec
+            .iter()
+            .filter(|k| keywords.iter().all(|kw| k.keyword.contains(kw)))
+            .cloned()
+            .collect()
     }
 
     pub fn get_all(&self) -> &Vec<Arc<HeisigKanji>> {

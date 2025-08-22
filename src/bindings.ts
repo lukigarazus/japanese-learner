@@ -5,20 +5,20 @@
 
 
 export const commands = {
-async searchKanji(char: string) : Promise<Result<KanjiPayload | null, string>> {
+async searchHeisigKanji(query: HeisigKanjiQuery) : Promise<Result<HeisigKanjiPayload[], string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("search_kanji", { char }) };
+    return { status: "ok", data: await TAURI_INVOKE("search_heisig_kanji", { query }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async getHeisigKanjis() : Promise<KanjiPayload[]> {
+async getHeisigKanjis() : Promise<HeisigKanjiPayload[]> {
     return await TAURI_INVOKE("get_heisig_kanjis");
 },
-async searchKanjis(chars: string[]) : Promise<Result<KanjiPayload[], string>> {
+async searchHeisigKanjis(chars: string[]) : Promise<Result<HeisigKanjiPayload[], string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("search_kanjis", { chars }) };
+    return { status: "ok", data: await TAURI_INVOKE("search_heisig_kanjis", { chars }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -63,6 +63,30 @@ async hasWord(word: string) : Promise<Result<boolean, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async getKanjis() : Promise<Result<Kanji[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_kanjis") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async addKanji(payload: KanjiCreatePayload) : Promise<Result<Kanji, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_kanji", { payload }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async hasKanji(kanji: string) : Promise<Result<boolean, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("has_kanji", { kanji }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -76,7 +100,10 @@ async hasWord(word: string) : Promise<Result<boolean, string>> {
 
 /** user-defined types **/
 
-export type KanjiPayload = { id: string; kanji: string; pronunciation: string; primitives: string[]; words: string[] }
+export type HeisigKanjiPayload = { id: string; kanji: string; pronunciation: string; primitives: string[]; words: string[]; jlpt_level: number | null; heisig_mnemonic: string | null; koohii_mnemonic_1: string | null; koohii_mnemonic_2: string | null }
+export type HeisigKanjiQuery = { Kanji: string } | { Reading: string } | { Keywords: string[] }
+export type Kanji = { id: string; kanji: string; readings: string[]; tags: string[]; writing_mnemonic: string | null; reading_mnemonic: string | null }
+export type KanjiCreatePayload = { kanji: string; readings: string[]; writing_mnemonic: string | null; reading_mnemonic: string | null; tags: string[] }
 export type KanjiReading = { reading: string }
 export type MyEntryDisplay = { word: string; reading: string; translations: string }
 export type Word = { id: string; word: string; meaning: string; kanji_readings: KanjiReading[] }

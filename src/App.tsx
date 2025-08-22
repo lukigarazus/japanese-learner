@@ -5,6 +5,14 @@ import { Words } from "./components/Words";
 const tabs = {
   Words: () => <Words />,
   Kanji: () => <Kanjis />,
+  "Parsed Words": () => {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Parsed Words</h1>
+        <p>This is a placeholder for the Parsed Words tab.</p>
+      </div>
+    );
+  },
 };
 
 function App() {

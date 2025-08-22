@@ -61,9 +61,7 @@ pub struct Kanji {
     pub kanji: String,
     pub readings: Vec<String>,
     pub tags: Vec<String>,
-    #[serde(default)]
     pub writing_mnemonic: Option<String>,
-    #[serde(default)]
     pub reading_mnemonic: Option<String>,
 }
 impl Entity for Kanji {
@@ -75,8 +73,10 @@ impl Entity for Kanji {
 #[derive(Serialize, Deserialize, Debug, Clone, specta::Type)]
 pub struct KanjiCreatePayload {
     pub kanji: String,
-    pub meaning: String,
     pub readings: Vec<String>,
+    pub writing_mnemonic: Option<String>,
+    pub reading_mnemonic: Option<String>,
+    pub tags: Vec<String>,
 }
 impl EntityCreatePayload<Kanji> for KanjiCreatePayload {
     fn to_entity(&self) -> Kanji {
@@ -84,9 +84,9 @@ impl EntityCreatePayload<Kanji> for KanjiCreatePayload {
             id: uuid::Uuid::new_v4().to_string(),
             kanji: self.kanji.clone(),
             readings: self.readings.clone(),
-            tags: vec![],
-            writing_mnemonic: None,
-            reading_mnemonic: None,
+            tags: self.tags.clone(),
+            writing_mnemonic: self.writing_mnemonic.clone(),
+            reading_mnemonic: self.reading_mnemonic.clone(),
         }
     }
 }

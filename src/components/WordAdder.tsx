@@ -36,7 +36,7 @@ const useChars = (currentWord: string | null) => {
 
 const useSearchKanjis = () => {
   return useMutation({
-    mutationFn: (chars: string[]) => commands.searchKanjis(chars),
+    mutationFn: (chars: string[]) => commands.searchHeisigKanjis(chars),
   });
 };
 
