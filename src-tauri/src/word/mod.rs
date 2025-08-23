@@ -114,9 +114,12 @@ impl Word {
     ) -> Result<Vec<MyEntry>, String> {
         let mut candidates = Vec::new();
 
-        let lemma = self.get_lemma()?;
-        let lemma_dict_entries = crate::translation::translate_word_all(&lemma, app_handle).await;
-        candidates.extend(lemma_dict_entries);
+        let lemma = self.get_lemma();
+        if let Ok(lemma) = lemma {
+            let lemma_dict_entries =
+                crate::translation::translate_word_all(&lemma, app_handle).await;
+            candidates.extend(lemma_dict_entries);
+        }
 
         let word_dict_entries =
             crate::translation::translate_word_all(&self.word, app_handle).await;

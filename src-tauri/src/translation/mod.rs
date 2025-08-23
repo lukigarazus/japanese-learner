@@ -42,23 +42,24 @@ impl MyDictionary {
         println!("Finding word: {}", word);
         let entry = self.kanji_to_entry.get(word).cloned();
         if entry.is_none() {
-            println!("Word not found in dictionary: {}", word);
             let kanji_entry = jmdict::entries()
                 .find(|e| e.kanji_elements().any(|k| k.text == word))
                 .map(MyEntry);
             if let Some(kanji_entry) = kanji_entry {
-                println!("Found kanji entry for word: {}", word);
                 return Some(kanji_entry);
             }
-            println!("No kanji entry found for word: {}", word);
             let reading_entry = jmdict::entries()
                 .find(|e| e.reading_elements().any(|r| r.text == word))
                 .map(MyEntry);
             if let Some(reading_entry) = reading_entry {
-                println!("Found reading entry for word: {}", word);
                 return Some(reading_entry);
             }
-            println!("No reading entry found for word: {}", word);
+            let meaning_entry = jmdict::entries()
+                .find(|e| e.senses().any(|s| s.glosses().any(|g| g.text == word)))
+                .map(MyEntry);
+            if let Some(meaning_entry) = meaning_entry {
+                return Some(meaning_entry);
+            }
             return None;
         } else {
             entry
@@ -84,6 +85,17 @@ impl MyDictionary {
             .map(MyEntry)
             .collect();
         candidates.extend(reading_entries);
+
+        let meaning_entries: Vec<MyEntry> = jmdict::entries()
+            .filter(|e| {
+                e.senses().any(|s| {
+                    s.glosses()
+                        .any(|g| g.text.matches(word.as_str()).next().is_some())
+                })
+            })
+            .map(MyEntry)
+            .collect();
+        candidates.extend(meaning_entries);
 
         candidates
     }
