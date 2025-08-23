@@ -64,9 +64,12 @@ pub trait Entities {
     fn add_entity(&mut self, entity: Self::EntityCreatePayload) -> Result<Self::Entity, String> {
         let entity = entity.to_entity();
         if self.has_entity(&entity.identifier()) {
-            return Err("Entity already exists".to_string());
-        }
+            Err("Entity already exists".to_string())
+        } else {
+            Ok(())
+        }?;
         self.borrow_entities_mut().push(entity.clone());
+        self.store_entities()?;
         Ok(entity)
     }
 }
