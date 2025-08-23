@@ -52,24 +52,10 @@ const useKanjis = (
   return kanjis;
 };
 
-// const useDictionary = (text: string | null) => {
-//   const { mutate, data } = useMutation({
-//     mutationFn: (text: string) => commands.getWordDictEntry(text),
-//   });
-
-//   useEffect(() => {
-//     if (text) {
-//       mutate(text);
-//     }
-//   }, [text, mutate]);
-
-//   if (!text) return null;
-
-//   return data;
-// };
-
 export const WordAdder = ({
   addWord,
+  initialQuery,
+  onSave,
 }: {
   addWord: (word: WordCreatePayload) => Promise<
     | {
@@ -77,6 +63,8 @@ export const WordAdder = ({
       }
     | { status: "error"; error: string }
   >;
+  initialQuery?: string;
+  onSave?: () => void;
 }) => {
   const [dictionaryWord, setDictionaryWord] = useState<MyEntryDisplay | null>(
     null
@@ -86,6 +74,8 @@ export const WordAdder = ({
   >([]);
   const [currentChar, setCurrentChar] = useState<null | number>(null);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState(initialQuery ?? ""); // <-- add query state
+
   const chars = useChars(dictionaryWord?.word ?? null);
   const kanjis = useKanjis(chars.arr);
 
@@ -96,7 +86,7 @@ export const WordAdder = ({
     }
   };
 
-  const onSave = () => {
+  const onSaveInternal = () => {
     if (!dictionaryWord) return;
     if (
       chars.arr.some(
@@ -120,6 +110,8 @@ export const WordAdder = ({
         setKanjiPronunciations([]);
         setCurrentChar(null);
         setError(null);
+        setQuery("");
+        if (onSave) onSave();
       } else if (res.status === "error") {
         setError(res.error);
       }
@@ -132,26 +124,19 @@ export const WordAdder = ({
     setError(null);
   }, [dictionaryWord]);
 
+  // If initialQuery changes, update query state
+  useEffect(() => {
+    if (initialQuery !== undefined) {
+      setQuery(initialQuery);
+    }
+  }, [initialQuery]);
+
   return (
     <div className="min-w-lg bg-white rounded-xl p-8">
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
         Add a Word
       </h2>
       <div className="mb-4">
-        {/* <label
-          className="block text-gray-700 font-medium mb-1"
-          htmlFor="word-input"
-        >
-          Word
-        </label>
-        <input
-          id="word-input"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-          placeholder="Word"
-          type="text"
-          value={currentWord ?? ""}
-          onChange={(e) => setWord(e.target.value)}
-        /> */}
         <Autocomplete<MyEntryDisplay>
           fetchData={async (v) => {
             const res = await commands.getWordCandidates(v);
@@ -172,7 +157,7 @@ export const WordAdder = ({
             </div>
           )}
           placeholder="Search for a word..."
-          value={dictionaryWord?.word}
+          value={dictionaryWord?.word ?? query}
         />
       </div>
 
@@ -268,14 +253,6 @@ export const WordAdder = ({
           value={meaning ?? ""}
           onChange={(e) => setMeaning(e.target.value)}
         />
-        {/* <div className="mt-2 text-gray-600 text-sm">
-          Dictionary translation:{" "}
-          {dictionary?.status === "ok"
-            ? dictionary.data
-              ? dictionary.data.translations
-              : "No translation found"
-            : null}
-        </div> */}
       </div>
 
       <div className="flex justify-end">
@@ -286,7 +263,7 @@ export const WordAdder = ({
               (char) => char.isKanji && !kanjiPronunciations[char.index]
             )
           }
-          onClick={onSave}
+          onClick={onSaveInternal}
           className="px-6 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save

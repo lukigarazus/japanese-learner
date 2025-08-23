@@ -3,6 +3,11 @@ import { commands, HeisigKanjiPayload, KanjiCreatePayload } from "../bindings";
 import { Autocomplete } from "./Autocomplete";
 import { isJapanese, isKana, isKanji } from "wanakana";
 import reactStringReplace from "react-string-replace";
+import { CheckBadgeIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { Dialog } from "./Dialog";
+import { WordAdder } from "./WordAdder";
+import { useAddMyWord, useMyWordsModel } from "../queries";
+import { parseHeisigWord, WordCard } from "./WordCard";
 
 export const KanjiAdder = ({
   addKanji,
@@ -57,7 +62,7 @@ const KanjiDisplay = ({
   return (
     <>
       <div className="font-bold flex flex-row justify-between items-center">
-        <span>{selectedKanji.kanji}</span>
+        <span className="text-2xl">{selectedKanji.kanji}</span>
         <button
           className="bg-blue-500 text-white p-1 rounded hover:bg-blue-600 transition cursor-pointer"
           onClick={async () => {
@@ -98,30 +103,16 @@ const KanjiDisplay = ({
           onChange={(e) => setMnemonic(e.target.value)}
         />
       </div>
+      <CollapsibleMnemonics selectedKanji={selectedKanji} />
       <div>
-        <h3 className="font-semibold">Writing Mnemonics</h3>
-        {selectedKanji.heisig_mnemonic && (
-          <div className="mb-2">
-            <h4 className="font-semibold">Heisig:</h4>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: selectedKanji.heisig_mnemonic,
-              }}
-            ></p>
-          </div>
-        )}
-        {selectedKanji.koohii_mnemonic_1 && (
-          <div className="mb-2">
-            <h4 className="font-semibold">Koohii 1:</h4>
-            <p>{selectedKanji.koohii_mnemonic_1}</p>
-          </div>
-        )}
-        {selectedKanji.koohii_mnemonic_2 && (
-          <div className="mb-2">
-            <h4 className="font-semibold">Koohii 2:</h4>
-            <p>{selectedKanji.koohii_mnemonic_2}</p>
-          </div>
-        )}
+        <h3 className="font-semibold">Sample words</h3>
+        <div className="flex flex-col gap-2">
+          {selectedKanji.words.map((word, idx) => {
+            const parsed = parseHeisigWord(word);
+            if (!parsed) return null;
+            return <WordCard word={parsed} key={idx} />;
+          })}
+        </div>
       </div>
     </>
   );
@@ -183,4 +174,57 @@ const parseQuery = (query: string) => {
     return { Keywords: keywords };
   }
   return null;
+};
+
+const CollapsibleMnemonics = ({
+  selectedKanji,
+}: {
+  selectedKanji: HeisigKanjiPayload;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const hasAnyMnemonic =
+    selectedKanji.heisig_mnemonic ||
+    selectedKanji.koohii_mnemonic_1 ||
+    selectedKanji.koohii_mnemonic_2;
+
+  if (!hasAnyMnemonic) return null;
+
+  return (
+    <div>
+      <button
+        className="font-semibold underline text-blue-600 mb-2"
+        onClick={() => setOpen((v) => !v)}
+        type="button"
+      >
+        {open ? "Hide" : "Show"} Writing Mnemonics
+      </button>
+      {open && (
+        <div>
+          {selectedKanji.heisig_mnemonic && (
+            <div className="mb-2">
+              <h4 className="font-semibold">Heisig:</h4>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: selectedKanji.heisig_mnemonic,
+                }}
+              ></p>
+            </div>
+          )}
+          {selectedKanji.koohii_mnemonic_1 && (
+            <div className="mb-2">
+              <h4 className="font-semibold">Koohii 1:</h4>
+              <p>{selectedKanji.koohii_mnemonic_1}</p>
+            </div>
+          )}
+          {selectedKanji.koohii_mnemonic_2 && (
+            <div className="mb-2">
+              <h4 className="font-semibold">Koohii 2:</h4>
+              <p>{selectedKanji.koohii_mnemonic_2}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };

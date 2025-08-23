@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { WordAdder } from "./WordAdder";
 import { Word } from "../bindings";
-import { useAddWord, useWords } from "../queries";
+import { useAddMyWord, useMyWords } from "../queries";
 
 type WordsState =
   | { kind: "idle" }
@@ -21,7 +21,7 @@ type WordsState =
 export const Words = () => {
   const [state, setState] = useState<WordsState>({ kind: "idle" });
   const [searchQuery, setSearchQuery] = useState<null | string>(null);
-  const { data, isLoading } = useWords();
+  const { data, isLoading } = useMyWords();
   const words = useMemo(() => {
     return data?.status === "ok" ? data.data : [];
   }, [data]);
@@ -156,6 +156,6 @@ const WordRow =
   };
 
 const WordAdd = ({}: {}) => {
-  const { mutateAsync: addWord } = useAddWord();
+  const { mutateAsync: addWord } = useAddMyWord();
   return <WordAdder addWord={addWord} />;
 };

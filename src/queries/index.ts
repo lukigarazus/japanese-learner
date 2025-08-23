@@ -1,14 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { commands } from "../bindings";
+import { commands, Kanji, Word } from "../bindings";
+import { useMemo } from "react";
 
-export const useWords = () => {
+export const useMyWords = () => {
   return useQuery({
     queryKey: ["words"],
     queryFn: () => commands.getWords(),
+    staleTime: Infinity,
   });
 };
 
-export const useAddWord = () => {
+export class MyWordsModel {
+  private wordMap: Map<string, Word>;
+  private wordSet: Set<string>;
+
+  constructor(words: Word[]) {
+    this.wordMap = new Map(words.map((word) => [word.id, word]));
+    this.wordSet = new Set(words.map((word) => word.word));
+  }
+
+  has(word: string): boolean {
+    return this.wordSet.has(word);
+  }
+}
+export const useMyWordsModel = (): MyWordsModel | null => {
+  const { data } = useMyWords();
+
+  return useMemo(() => {
+    return data?.status === "ok" ? new MyWordsModel(data.data) : null;
+  }, [data]);
+};
+
+export const useAddMyWord = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: commands.addWord,
@@ -18,14 +41,35 @@ export const useAddWord = () => {
   });
 };
 
-export const useKanjis = () => {
+export const useMyKanjis = () => {
   return useQuery({
     queryKey: ["kanjis"],
     queryFn: () => commands.getKanjis(),
   });
 };
 
-export const useAddKanji = () => {
+export class MyKanjisModel {
+  private kanjiMap: Map<string, Kanji>;
+  private kanjiSet: Set<string>;
+
+  constructor(private kanjis: Kanji[]) {
+    this.kanjiMap = new Map(kanjis.map((kanji) => [kanji.id, kanji]));
+    this.kanjiSet = new Set(kanjis.map((kanji) => kanji.kanji));
+  }
+
+  has(kanji: string): boolean {
+    return this.kanjiSet.has(kanji);
+  }
+}
+export const useMyKanjisModel = (): MyKanjisModel | null => {
+  const { data } = useMyKanjis();
+
+  return useMemo(() => {
+    return data?.status === "ok" ? new MyKanjisModel(data.data) : null;
+  }, [data]);
+};
+
+export const useAddMyKanji = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: commands.addKanji,

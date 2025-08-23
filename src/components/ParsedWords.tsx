@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { useKanjis, useWords } from "../queries";
+import { useMyKanjis, useMyWords } from "../queries";
 import { isKanji } from "wanakana";
 import AnnotatedText from "./AnnotatedText";
 
 export const ParsedWords = () => {
-  const { data: words } = useWords();
-  const { data: kanjis } = useKanjis();
+  const { data: words } = useMyWords();
+  const { data: kanjis } = useMyKanjis();
 
   const dataNotLoaded =
     !words || !kanjis || words.status !== "ok" || kanjis.status !== "ok";

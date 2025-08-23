@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Kanji } from "../bindings";
 import { KanjiAdder } from "./KanjiAdder";
-import { useAddKanji, useKanjis } from "../queries";
+import { useAddMyKanji, useMyKanjis } from "../queries";
 
 type KanjisState =
   | { kind: "idle" }
@@ -20,7 +20,7 @@ type KanjisState =
 export const Kanjis = () => {
   const [state, setState] = useState<KanjisState>({ kind: "idle" });
   const [searchQuery, setSearchQuery] = useState<null | string>(null);
-  const { data, isLoading } = useKanjis();
+  const { data, isLoading } = useMyKanjis();
   const kanjis = useMemo(() => {
     return data?.status === "ok" ? data.data : [];
   }, [data]);
@@ -117,7 +117,7 @@ const KanjiRow =
       >
         <div className="flex flex-row justify-between w-full items-center">
           <div className="flex flex-row">
-            <div className="font-medium">{replaceQuery(kanji.kanji)}</div>
+            <div className="font-bold text-lg">{replaceQuery(kanji.kanji)}</div>
           </div>
           <div>
             <button
@@ -143,6 +143,6 @@ const KanjiRow =
   };
 
 const KanjiAdd = ({}: {}) => {
-  const { mutateAsync: addKanji } = useAddKanji();
+  const { mutateAsync: addKanji } = useAddMyKanji();
   return <KanjiAdder addKanji={addKanji} />;
 };
