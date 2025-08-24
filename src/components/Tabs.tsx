@@ -2,10 +2,12 @@ import { useState } from "react";
 
 export const Tabs = ({
   tabs,
+  defaultActive = 0,
 }: {
   tabs: { name: string; content: () => React.ReactNode }[];
+  defaultActive?: number;
 }) => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(defaultActive);
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex w-full gap-1 p-1 pb-0 rounded-t-lg h-[50px]">

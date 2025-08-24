@@ -99,6 +99,10 @@ impl MyDictionary {
 
         candidates
     }
+
+    pub fn get_all(&self) -> Vec<MyEntry> {
+        self.kanji_to_entry.values().cloned().collect()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -178,4 +182,9 @@ pub async fn translate_word(word: &String, app_handle: &tauri::AppHandle) -> Opt
 pub async fn translate_word_all(word: &String, app_handle: &tauri::AppHandle) -> Vec<MyEntry> {
     let dictionary = MyDictionary::get(&app_handle);
     dictionary.find_all(word)
+}
+
+pub async fn get_all_entries(app_handle: &tauri::AppHandle) -> Vec<MyEntry> {
+    let dictionary = MyDictionary::get(&app_handle);
+    dictionary.get_all()
 }

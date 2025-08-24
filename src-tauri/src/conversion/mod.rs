@@ -18,12 +18,12 @@ fn katakana_to_hiragana(input: &str) -> String {
         .collect()
 }
 
-pub fn convert(text: &String) -> LinderaResult<String> {
-    let dictionary = load_embedded_dictionary(DictionaryKind::IPADIC)?;
+pub fn convert(text: &String) -> Result<String, String> {
+    let dictionary = load_embedded_dictionary(DictionaryKind::IPADIC).map_err(|e| e.to_string())?;
     let segmenter = Segmenter::new(Mode::Normal, dictionary, None);
     let tokenizer = Tokenizer::new(segmenter);
 
-    let mut tokens = tokenizer.tokenize(text)?;
+    let mut tokens = tokenizer.tokenize(text).map_err(|e| e.to_string())?;
 
     let mut hiragana_output = String::new();
     for token in tokens.iter_mut() {

@@ -24,6 +24,30 @@ async searchHeisigKanjis(chars: string[]) : Promise<Result<HeisigKanjiPayload[],
     else return { status: "error", error: e  as any };
 }
 },
+async getKanjidic2ByKanji(kanji: string) : Promise<Result<Kanjidic2Entry[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_kanjidic2_by_kanji", { kanji }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async parseWord(word: string) : Promise<Result<FuriganaString, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("parse_word", { word }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async validateDictionary() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("validate_dictionary") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async getWordDictEntry(word: string) : Promise<Result<MyEntryDisplay | null, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_word_dict_entry", { word }) };
@@ -100,11 +124,14 @@ async hasKanji(kanji: string) : Promise<Result<boolean, string>> {
 
 /** user-defined types **/
 
+export type Furigana = { Kanji: { character: string; reading: string } } | { Other: string }
+export type FuriganaString = Furigana[]
 export type HeisigKanjiPayload = { id: string; kanji: string; pronunciation: string; primitives: string[]; words: string[]; jlpt_level: number | null; heisig_mnemonic: string | null; koohii_mnemonic_1: string | null; koohii_mnemonic_2: string | null }
 export type HeisigKanjiQuery = { Kanji: string } | { Reading: string } | { Keywords: string[] }
 export type Kanji = { id: string; kanji: string; readings: string[]; tags: string[]; writing_mnemonic: string | null; reading_mnemonic: string | null }
 export type KanjiCreatePayload = { kanji: string; readings: string[]; writing_mnemonic: string | null; reading_mnemonic: string | null; tags: string[] }
 export type KanjiReading = { reading: string }
+export type Kanjidic2Entry = { literal: string; ja_on: string; ja_kun: string; heisig: string; heisig6: string }
 export type MyEntryDisplay = { word: string; reading: string; translations: string }
 export type Word = { id: string; word: string; meaning: string; kanji_readings: KanjiReading[] }
 export type WordCreatePayload = { word: string; meaning: string; kanji_readings: KanjiReading[] }

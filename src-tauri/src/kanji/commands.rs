@@ -1,3 +1,4 @@
+use crate::data::kanjidic2::*;
 use specta::Type;
 use std::sync::Arc;
 
@@ -120,4 +121,64 @@ pub async fn search_heisig_kanjis(
     }
 
     Ok(result)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn get_kanjidic2_by_kanji(
+    app_handle: tauri::AppHandle,
+    kanji: String,
+) -> Result<Vec<Kanjidic2Entry>, String> {
+    let kanjidic2_reader_state = crate::data::get_kanjidic2_entries_reader(&app_handle);
+    let mut kanjidic2_reader = kanjidic2_reader_state.0.write().await;
+    let mut entries = Vec::new();
+
+    if let Some(entry) = kanjidic2_reader.find_by_kanji(&kanji) {
+        entries.push(entry.clone());
+    }
+
+    Ok(entries)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn parse_word(
+    app_handle: tauri::AppHandle,
+    word: String,
+) -> Result<crate::kanji::parser::FuriganaString, String> {
+    crate::kanji::parser::parse_word(&app_handle, &word, None).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn validate_dictionary(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let dictionary = crate::translation::get_all_entries(&app_handle).await;
+
+    let mut c = 0;
+    for entry in &dictionary {
+        let kanji_string = entry.kanji_element_string();
+        if let Some(kanji_string) = kanji_string {
+            let parsed = crate::kanji::parser::parse_word(
+                &app_handle,
+                &kanji_string,
+                entry.reading_element_string().map(|s| s.to_string()),
+            )
+            .await;
+            match parsed {
+                Ok(furigana_string) => {}
+                Err(err) => {
+                    println!("Failed to parse kanji string {:?}: {}", kanji_string, err);
+                    c += 1;
+                }
+            }
+        }
+    }
+
+    println!(
+        "Validated {} dictionary entries, found {} errors",
+        dictionary.len(),
+        c
+    );
+
+    Ok(())
 }

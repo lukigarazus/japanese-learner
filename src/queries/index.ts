@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { commands, Kanji, Word } from "../bindings";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export const useMyWords = () => {
   return useQuery({
@@ -77,4 +77,20 @@ export const useAddMyKanji = () => {
       await queryClient.invalidateQueries({ queryKey: ["kanjis"] });
     },
   });
+};
+
+export const useFindInKanjidic2 = () => {
+  return useMutation({
+    mutationFn: (kanji: string) => commands.getKanjidic2ByKanji(kanji),
+  });
+};
+
+export const useKanjidic2 = (kanji: string) => {
+  const { mutate, data } = useFindInKanjidic2();
+  useEffect(() => {
+    if (kanji) {
+      mutate(kanji);
+    }
+  }, [kanji, mutate]);
+  return { data };
 };

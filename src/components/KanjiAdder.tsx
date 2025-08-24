@@ -6,7 +6,7 @@ import reactStringReplace from "react-string-replace";
 import { CheckBadgeIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Dialog } from "./Dialog";
 import { WordAdder } from "./WordAdder";
-import { useAddMyWord, useMyWordsModel } from "../queries";
+import { useAddMyWord, useKanjidic2, useMyWordsModel } from "../queries";
 import { parseHeisigWord, WordCard } from "./WordCard";
 
 export const KanjiAdder = ({
@@ -59,6 +59,8 @@ const KanjiDisplay = ({
 }) => {
   const [mnemonic, setMnemonic] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { data: kanjidic2Entry } = useKanjidic2(selectedKanji.kanji);
+  console.log(kanjidic2Entry);
   return (
     <>
       <div className="font-bold flex flex-row justify-between items-center">
