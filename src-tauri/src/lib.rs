@@ -1,6 +1,7 @@
 use specta_typescript::Typescript;
 use tauri_specta::{Builder, collect_commands};
 
+mod conjugation;
 mod conversion;
 mod data;
 mod kanji;
@@ -13,6 +14,7 @@ pub fn run() {
     let mut builder = Builder::<tauri::Wry>::new()
         // Then register them (separated by a comma)
         .commands(collect_commands![
+            conjugation::conjugate_verb,
             kanji::commands::search_heisig_kanji,
             kanji::commands::get_heisig_kanjis,
             kanji::commands::search_heisig_kanjis,

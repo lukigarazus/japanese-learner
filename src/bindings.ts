@@ -5,6 +5,14 @@
 
 
 export const commands = {
+async conjugateVerb(verb: string) : Promise<Result<VerbConjugationResult, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("conjugate_verb", { verb }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async searchHeisigKanji(query: HeisigKanjiQuery) : Promise<Result<HeisigKanjiPayload[], string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("search_heisig_kanji", { query }) };

@@ -1,6 +1,7 @@
 import { Kanjis } from "./components/Kanjis";
 import { ParsedWords } from "./components/ParsedWords";
 import { Tabs } from "./components/Tabs";
+import { VerbConjugator } from "./components/VerbConjugator";
 import { Words } from "./components/Words";
 
 const tabs = {
