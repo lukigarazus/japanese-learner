@@ -10,7 +10,7 @@ export const Tabs = ({
   const [activeTab, setActiveTab] = useState(defaultActive);
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex w-full gap-1 p-1 pb-0 rounded-t-lg h-[50px]">
+      <div className="bg-white flex w-full gap-1 p-1 pb-0 rounded-t-lg h-[50px]">
         {tabs.map((tab, idx) => (
           <div
             key={tab.name}

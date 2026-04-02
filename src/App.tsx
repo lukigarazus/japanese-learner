@@ -1,22 +1,25 @@
 import { Kanjis } from "./components/Kanjis";
 import { ParsedWords } from "./components/ParsedWords";
 import { Tabs } from "./components/Tabs";
-import { VerbConjugator } from "./components/VerbConjugator";
 import { Words } from "./components/Words";
 
 const databaseTabs = [
   { name: "Words", content: () => <Words /> },
   { name: "Kanji", content: () => <Kanjis /> },
+  {
+    name: "Parsed Words",
+    content: () => <ParsedWords />,
+  },
 ];
 
 const topTabs = [
   {
     name: "Database",
-    content: () => <Tabs tabs={databaseTabs} />,
-  },
-  {
-    name: "Parsed Words",
-    content: () => <ParsedWords />,
+    content: () => (
+      <div className="p-1 size-full">
+        <Tabs tabs={databaseTabs} />
+      </div>
+    ),
   },
 ];
 
