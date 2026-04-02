@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMyKanjis, useMyWords } from "../queries";
 import { isKanji } from "wanakana";
 import AnnotatedText from "./AnnotatedText";
@@ -6,7 +6,6 @@ import { commands } from "../bindings";
 
 export const ParsedWords = () => {
   const [word, setWord] = useState("時間");
-  const [parsedWord, setParsedWord] = useState("");
 
   const { data: words } = useMyWords();
   const { data: kanjis } = useMyKanjis();
@@ -15,9 +14,7 @@ export const ParsedWords = () => {
     !words || !kanjis || words.status !== "ok" || kanjis.status !== "ok";
 
   useEffect(() => {
-    commands.parseWord(word).then(() => {
-      setParsedWord(word);
-    });
+    commands.parseWord(word);
   }, [word]);
 
   return (

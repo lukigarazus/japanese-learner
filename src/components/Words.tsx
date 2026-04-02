@@ -40,13 +40,10 @@ export const Words = () => {
   }, [filteredWordsResults]);
   const WordRowInternal = useMemo(
     () =>
-      WordRow(
-        searchQuery ?? "",
-        (index) =>
-          setState({ kind: "word-details", word: filteredWords[index] }),
-        () => {}
+      WordRow(searchQuery ?? "", (index) =>
+        setState({ kind: "word-details", word: filteredWords[index] })
       ),
-    [searchQuery]
+    [searchQuery, filteredWords]
   );
   return (
     <div className="h-full w-full flex flex-row gap-2 p-2">
@@ -99,11 +96,7 @@ export const Words = () => {
 };
 
 const WordRow =
-  (
-    query: string,
-    onOpen: (index: number) => void,
-    onRemove: (index: number) => void
-  ) =>
+  (query: string, onOpen: (index: number) => void) =>
   ({ index, style, data }: ListChildComponentProps) => {
     const word: Word = data[index];
     const pronunciation = word.word.split("").reduce(
@@ -155,7 +148,7 @@ const WordRow =
     );
   };
 
-const WordAdd = ({}: {}) => {
+const WordAdd = () => {
   const { mutateAsync: addWord } = useAddMyWord();
   return <WordAdder addWord={addWord} />;
 };

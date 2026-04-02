@@ -48,7 +48,7 @@ const useKanjis = (
     if (chars.some((char) => char.isKanji)) {
       search(chars.filter((char) => char.isKanji).map((char) => char.char));
     }
-  }, [chars]);
+  }, [chars, search]);
   return kanjis;
 };
 
@@ -119,14 +119,18 @@ export const WordAdder = ({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setKanjiPronunciations([]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentChar(null);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setError(null);
   }, [dictionaryWord]);
 
   // If initialQuery changes, update query state
   useEffect(() => {
     if (initialQuery !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQuery(initialQuery);
     }
   }, [initialQuery]);

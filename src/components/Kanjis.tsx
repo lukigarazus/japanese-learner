@@ -39,13 +39,10 @@ export const Kanjis = () => {
   }, [filteredKanjisResults]);
   const KanjiRowInternal = useMemo(
     () =>
-      KanjiRow(
-        searchQuery ?? "",
-        (index) =>
-          setState({ kind: "kanji-details", kanji: filteredKanjis[index] }),
-        () => {}
+      KanjiRow(searchQuery ?? "", (index) =>
+        setState({ kind: "kanji-details", kanji: filteredKanjis[index] })
       ),
-    [searchQuery]
+    [searchQuery, filteredKanjis]
   );
   return (
     <div className="h-full w-full flex flex-row gap-2 p-2">
@@ -98,11 +95,7 @@ export const Kanjis = () => {
 };
 
 const KanjiRow =
-  (
-    query: string,
-    onOpen: (index: number) => void,
-    onRemove: (index: number) => void
-  ) =>
+  (query: string, onOpen: (index: number) => void) =>
   ({ index, style, data }: ListChildComponentProps) => {
     const kanji: Kanji = data[index];
     const replaceQuery = (text: string) => {
@@ -142,7 +135,7 @@ const KanjiRow =
     );
   };
 
-const KanjiAdd = ({}: {}) => {
+const KanjiAdd = () => {
   const { mutateAsync: addKanji } = useAddMyKanji();
   return <KanjiAdder addKanji={addKanji} />;
 };

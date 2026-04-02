@@ -3,10 +3,7 @@ import { commands, HeisigKanjiPayload, KanjiCreatePayload } from "../bindings";
 import { Autocomplete } from "./Autocomplete";
 import { isJapanese, isKana, isKanji } from "wanakana";
 import reactStringReplace from "react-string-replace";
-import { CheckBadgeIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Dialog } from "./Dialog";
-import { WordAdder } from "./WordAdder";
-import { useAddMyWord, useKanjidic2, useMyWordsModel } from "../queries";
+import { useKanjidic2 } from "../queries";
 import { parseHeisigWord, WordCard } from "./WordCard";
 
 export const KanjiAdder = ({

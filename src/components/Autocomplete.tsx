@@ -31,6 +31,7 @@ export function Autocomplete<T>({
     if (value !== undefined && value !== query) {
       setQuery(value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   useEffect(() => {

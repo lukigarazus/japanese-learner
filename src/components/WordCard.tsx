@@ -9,7 +9,7 @@ export const WordCard = ({ word }: { word: SimpleWordRepresentation }) => {
   const wordModel = useMyWordsModel();
   const { mutateAsync: addWord } = useAddMyWord();
   const [dialogOpen, setDialogOpen] = useState(false);
-  let parsed = word;
+  const parsed = word;
   return (
     <div className="p-3 rounded border border-gray-200 shadow-sm flex flex-row justify-between items-center gap-1">
       <div className="flex flex-col gap-1">
@@ -45,12 +45,14 @@ export const WordCard = ({ word }: { word: SimpleWordRepresentation }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export type SimpleWordRepresentation = {
   word: string;
   reading: string;
   meaning: string;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const parseHeisigWord = (
   word: string
 ): SimpleWordRepresentation | null => {
