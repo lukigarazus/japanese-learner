@@ -132,6 +132,8 @@ async hasKanji(kanji: string) : Promise<Result<boolean, string>> {
 
 /** user-defined types **/
 
+export type ConjugatedForm = { form: ConjugationForm; hiragana: string; kanji: string | null }
+export type ConjugationForm = "Present" | "PresentPolite" | "Past" | "PastPolite" | "Negative" | "NegativePolite" | "PastNegative" | "PastNegativePolite" | "TeForm" | "NegativeTeForm"
 export type Furigana = { Kanji: { character: string; reading: string } } | { Other: string }
 export type FuriganaString = Furigana[]
 export type HeisigKanjiPayload = { id: string; kanji: string; pronunciation: string; primitives: string[]; words: string[]; jlpt_level: number | null; heisig_mnemonic: string | null; koohii_mnemonic_1: string | null; koohii_mnemonic_2: string | null }
@@ -141,6 +143,7 @@ export type KanjiCreatePayload = { kanji: string; readings: string[]; writing_mn
 export type KanjiReading = { reading: string }
 export type Kanjidic2Entry = { literal: string; ja_on: string; ja_kun: string; heisig: string; heisig6: string }
 export type MyEntryDisplay = { word: string; reading: string; translations: string }
+export type VerbConjugationResult = { dictionary_form: string; verb_type: string; conjugations: ConjugatedForm[] }
 export type Word = { id: string; word: string; meaning: string; kanji_readings: KanjiReading[] }
 export type WordCreatePayload = { word: string; meaning: string; kanji_readings: KanjiReading[] }
 
